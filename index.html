@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TitiBrain AI</title>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #fff;
+      font-family: "Segoe UI", sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #00ffa0;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #cccccc;
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 30px #00ffa040;
+    }
+
+    .mic-button {
+      background-color: #00ffa0;
+      border: none;
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .mic-button:hover {
+      background-color: #00dd90;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Welcome to TitiBrain AI</h1>
+  <p>Speak or chat below. Powered by HuggingFace 🧠💬</p>
+
+  <!-- Voice input mic -->
+  <button class="mic-button" onclick="startVoice()">🎙️ Talk to TitiBrain</button>
+
+  <!-- Embed AI chatbot -->
+  <iframe
+    id="chatbot"
+    src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?embed=true"
+    width="100%"
+    height="600"
+  ></iframe>
+
+  <script>
+    function startVoice() {
+      const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const spoken = event.results[0][0].transcript;
+        speak("Sending: " + spoken);
+        alert("You said: " + spoken + "\n\nPlease type it into the chat manually.");
+      };
+
+      recognition.onerror = function(e) {
+        alert("🎙️ Voice error: " + e.error);
+      };
+    }
+
+    function speak(text) {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      synth.speak(utterance);
+    }
+  </script>
+</body>
+  </html>
