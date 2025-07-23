@@ -1,13 +1,26 @@
-from flask import Flask, request, render_template, jsonify
+import os
+import requests
+from flask import Flask, request, jsonify, render_template
 from llama_cpp import Llama
 
-app = Flask(__name__)
+MODEL_URL = "https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat/resolve/main/tinyllama-1.1b-chat-v0.3.Q2_K.gguf"
+MODEL_FILE = "tinyllama-1.1b-chat-v0.3.Q2_K.gguf"
 
-llm = Llama(
-    model_path="tinyllama-1.1b-chat-v0.3.Q2_K.gguf",
-    n_ctx=512,
-    n_threads=4
-)
+# Download model if missing
+if not os.path.exists(MODEL_FILE):
+    print("Downloading model...")
+    with requests.get(MODEL_URL, stream=True) as r:
+        with open(MODEL_FILE, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+    print("Model downloaded ✅")
+
+# Load the model
+llm = Llama(model_path=MODEL_FILE, n_ctx=512, n_threads=4)
+
+# Flask app
+app = Flask(__name__)
 
 @app.route("/")
 def home():
@@ -15,11 +28,11 @@ def home():
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    user_input = request.json["message"]
-    prompt = f"User: {user_input}\nAssistant:"
-    result = llm(prompt, max_tokens=256, stop=["User:", "Assistant:"], echo=False)
-    reply = result["choices"][0]["text"].strip()
+    user_message = request.json["message"]
+    prompt = f"User: {user_message}\nAssistant:"
+    output = llm(prompt, max_tokens=256, stop=["User:", "Assistant:"], echo=False)
+    reply = output["choices"][0]["text"].strip()
     return jsonify({"reply": reply})
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
