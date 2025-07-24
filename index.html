@@ -3,28 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Titi ke AI</title>
+  <title>🧠 Titi ke AI</title>
   <style>
     body {
       background-color: #0d0d0d;
-      color: #ffffff;
+      color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 2rem;
       text-align: center;
+      padding: 2rem;
     }
-
     h1 {
       color: #1e90ff;
       font-size: 2rem;
     }
-
-    p {
-      font-size: 1rem;
-      color: #aaa;
-      margin-bottom: 2rem;
-    }
-
     input, button {
       padding: 12px;
       font-size: 16px;
@@ -32,26 +23,17 @@
       margin-top: 10px;
       border-radius: 8px;
       border: none;
-      box-sizing: border-box;
     }
-
     input {
-      background: #1c1c1c;
-      color: #ffffff;
+      background: #222;
+      color: #fff;
     }
-
     button {
       background-color: #00c853;
       color: white;
       margin-top: 10px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
-
-    button:hover {
-      background-color: #00e676;
-    }
-
     #response {
       margin-top: 30px;
       font-size: 18px;
@@ -59,35 +41,30 @@
       padding: 1rem;
       border-radius: 10px;
       color: #00e676;
-      min-height: 50px;
     }
-
     footer {
-      margin-top: 40px;
+      margin-top: 2rem;
       font-size: 0.9rem;
-      color: #444;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
   <h1>🧠 Titi ke AI</h1>
   <p>Ask me anything below 👇</p>
-
   <input id="userInput" placeholder="Type your question..." />
   <br/>
   <button onclick="talkToBrain()">Talk to Titi Brain</button>
-
-  <div id="response">🤖 Ready when you are...</div>
+  <div id="response">Waiting for message...</div>
 
   <footer>
-    Made with ❤️ by Ethereal Ink. Powered by TinyLLaMA.
+    Made with ❤️ by Ethereal Ink. Powered by TinyLLAMA.
   </footer>
 
   <script>
     async function talkToBrain() {
       const message = document.getElementById('userInput').value;
-      const responseBox = document.getElementById('response');
-      responseBox.innerText = "⏳ Thinking...";
+      document.getElementById('response').innerText = "Thinking...";
 
       try {
         const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/run/predict", {
@@ -100,10 +77,10 @@
 
         const data = await res.json();
         const reply = data?.data?.[0] || "⚠️ No response.";
-        responseBox.innerText = reply;
-      } catch (error) {
-        responseBox.innerText = "❌ Error connecting to Titi Brain.";
-        console.error(error);
+        document.getElementById('response').innerText = reply;
+
+      } catch (err) {
+        document.getElementById('response').innerText = "❌ Error connecting to TitiBrain.";
       }
     }
   </script>
