@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Titi ke AI</title>
+  <title>Titi ke AI – Dream to Image & Talk</title>
   <style>
     body {
       background-color: #0b0f19;
@@ -11,132 +11,93 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
-      margin: 0;
     }
-
     h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: #00ffa0;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 1.1rem;
       margin-bottom: 20px;
     }
-
-    iframe {
+    input, button {
+      padding: 12px;
+      border-radius: 8px;
       border: none;
+      margin: 10px;
+      font-size: 1rem;
+    }
+    #imageResult {
+      margin-top: 20px;
+      max-width: 100%;
       border-radius: 12px;
       box-shadow: 0 0 30px #00ffa040;
-      margin-bottom: 30px;
     }
-
-    button {
-      padding: 10px 20px;
+    #micBtn {
       background: #00ffa0;
       color: #000;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
       cursor: pointer;
-      margin: 10px;
     }
-
-    input {
-      padding: 10px;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 6px;
-      margin-top: 10px;
-      border: none;
-    }
-
-    #imageArea img {
-      margin-top: 20px;
-      max-width: 90%;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #00ffa040;
-    }
-
-    #voiceResult {
-      margin-top: 10px;
-      font-style: italic;
-      color: #ccc;
+    #generateBtn {
+      background: #333;
+      color: #00ffa0;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <h1>🧠 Titi ke AI</h1>
-  <p>Your local AI brain for chats, voice, and images</p>
+  <p>🎨 Describe anything & I’ll create an image for you below:</p>
 
-  <!-- 🎙 VOICE -->
-  <h2>🎤 Speak to Titi</h2>
-  <button onclick="startVoice()">Start Talking</button>
-  <p id="voiceResult"></p>
+  <input type="text" id="promptInput" placeholder="Type your image prompt..." />
+  <button id="micBtn">🎤 Speak</button>
+  <button id="generateBtn">✨ Generate Image</button>
 
-  <!-- 💬 CHAT -->
-  <h2>💬 Ask Titi Anything</h2>
-  <iframe
-    src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?embed=true"
-    width="100%"
-    height="600"
-  ></iframe>
-
-  <!-- 🎨 IMAGE -->
-  <h2>🎨 Create Image</h2>
-  <input type="text" id="prompt" placeholder="Describe what to generate..." />
-  <button onclick="generateImage()">Generate Image</button>
-  <div id="imageArea"></div>
+  <div>
+    <img id="imageResult" src="" alt="" />
+  </div>
 
   <script>
-    // 🎙 Voice-to-Text
-    function startVoice() {
-      const result = document.getElementById("voiceResult");
+    const micBtn = document.getElementById('micBtn');
+    const promptInput = document.getElementById('promptInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const imageResult = document.getElementById('imageResult');
+
+    // 🎤 Voice-to-text using Web Speech API
+    micBtn.addEventListener('click', () => {
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = "en-US";
+      recognition.lang = 'en-US';
       recognition.start();
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        result.textContent = "You said: " + transcript;
+      recognition.onresult = function(event) {
+        promptInput.value = event.results[0][0].transcript;
       };
+    });
 
-      recognition.onerror = () => {
-        result.textContent = "Voice recognition failed.";
-      };
-    }
+    // 🖼 Generate image via Vercel API route
+    generateBtn.addEventListener('click', async () => {
+      const prompt = promptInput.value.trim();
+      if (!prompt) return alert('Please enter a prompt first.');
 
-    // 🎨 Image Generator using HuggingFace Inference API
-    async function generateImage() {
-      const prompt = document.getElementById("prompt").value;
-      if (!prompt) return;
+      generateBtn.disabled = true;
+      generateBtn.textContent = '⏳ Generating...';
 
-      document.getElementById("imageArea").innerHTML = "Generating...";
-
-      const response = await fetch("https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2", {
+      const response = await fetch("/api/generate-image", {
         method: "POST",
-        headers: {
-          Authorization: "Bearer hf_your_REAL_token_here",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ inputs: prompt })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
       });
 
       if (!response.ok) {
-        document.getElementById("imageArea").innerHTML = "⚠️ Failed to generate.";
+        alert("Failed to generate image.");
+        generateBtn.disabled = false;
+        generateBtn.textContent = '✨ Generate Image';
         return;
       }
 
-      const buffer = await response.arrayBuffer();
-      const base64 = btoa(
-        new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
-      );
-      const image = new Image();
-      image.src = `data:image/png;base64,${base64}`;
-      document.getElementById("imageArea").innerHTML = "";
-      document.getElementById("imageArea").appendChild(image);
-    }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      imageResult.src = url;
+
+      generateBtn.disabled = false;
+      generateBtn.textContent = '✨ Generate Image';
+    });
   </script>
 </body>
-    </html>
+</html>
