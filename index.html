@@ -1,81 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Titi ke AI - BrainChat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      background-color: #0d1117;
+      background: #0d1117;
       color: #e6edf3;
       font-family: "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       padding: 2rem;
+      text-align: center;
     }
     h1 {
       color: #58a6ff;
     }
-    input, button, textarea {
-      padding: 0.75rem;
-      border-radius: 6px;
-      border: none;
-      margin-top: 10px;
-      width: 100%;
+    textarea {
+      width: 90%;
       max-width: 600px;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #238636;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #2ea043;
-    }
-    .response {
-      background-color: #161b22;
       padding: 1rem;
+      font-size: 1rem;
       border-radius: 8px;
       margin-top: 1rem;
+    }
+    button {
+      background: #238636;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .response {
+      background: #161b22;
+      color: #fff;
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
       max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
       white-space: pre-wrap;
     }
     footer {
-      margin-top: 3rem;
+      margin-top: 4rem;
       color: #8b949e;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Titi ke AI</h1>
-  <p>Ask me anything, I run on HuggingFace 🤖</p>
-  <textarea id="userInput" rows="4" placeholder="Type your question..."></textarea>
-  <button onclick="askBrain()">Talk to Titi Brain</button>
-  <div id="response" class="response"></div>
 
-  <footer>Made with ❤️ by Ethereal Ink • Powered by HuggingFace</footer>
+  <h1>🧠 <span style="color:#58a6ff">Titi ke AI</span></h1>
+  <p>Ask me anything, I run on HuggingFace 🤖</p>
+  <textarea id="userInput" rows="4" placeholder="Type your question here..."></textarea><br>
+  <button onclick="askTiti()">Talk to Titi Brain</button>
+
+  <div class="response" id="responseBox">🧠 Waiting for your question...</div>
+
+  <footer>Made with ❤️ by Ethereal Ink | Powered by HuggingFace + TinyLlama</footer>
 
   <script>
-    async function askBrain() {
-      const input = document.getElementById("userInput").value;
-      const responseDiv = document.getElementById("response");
-      responseDiv.innerText = "Thinking...";
+    async function askTiti() {
+      const userMessage = document.getElementById("userInput").value;
+      const responseBox = document.getElementById("responseBox");
+      responseBox.innerText = "⏳ Thinking...";
+
+      const formData = new FormData();
+      formData.append("data", userMessage);
 
       try {
-        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/api/predict", {
+        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/api/predict/", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ data: [input] })
+          body: formData
         });
 
-        const data = await res.json();
-        responseDiv.innerText = data.data[0];
+        const result = await res.json();
+        responseBox.innerText = result.data[0];
       } catch (err) {
-        responseDiv.innerText = "⚠️ Error: Cannot reach Hugging Face Space.";
+        responseBox.innerText = "⚠️ Cannot reach Hugging Face Space. Please try again later.";
       }
     }
   </script>
