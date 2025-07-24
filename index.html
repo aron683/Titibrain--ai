@@ -2,123 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Titi ke AI – Dream & Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TitiBrain AI – Chat Live</title>
   <style>
     body {
       margin: 0;
-      background-color: #0b0f19;
-      color: white;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      background: #0b0f19;
+      color: #fff;
     }
     header {
-      background-color: #111827;
+      background: #111827;
       padding: 20px;
       text-align: center;
-      color: #00ffa0;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: bold;
-    }
-    main {
-      display: flex;
-      flex-wrap: wrap;
-      flex: 1;
-    }
-    section {
-      flex: 1 1 50%;
-      padding: 20px;
-      box-sizing: border-box;
+      color: #00ffa0;
     }
     iframe {
       width: 100%;
-      height: 85vh;
+      height: calc(100vh - 80px);
       border: none;
-      border-radius: 10px;
+      border-top: 2px solid #00ffa050;
     }
-    input, button {
-      font-size: 1rem;
+    footer {
+      background: #0b0f19;
+      color: #888;
+      text-align: center;
       padding: 10px;
-      border-radius: 5px;
-      border: none;
-      outline: none;
-      margin: 5px 0;
-    }
-    input {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-    button {
-      background-color: #00ffa0;
-      color: #000;
-      cursor: pointer;
-    }
-    #image-result {
-      margin-top: 10px;
-      max-width: 100%;
-      border-radius: 8px;
+      font-size: 0.8rem;
     }
   </style>
 </head>
 <body>
 
-  <header>🧠 Titi ke AI – Dream & Chat</header>
+  <header>🧠 TitiBrain AI – Chat Live</header>
 
-  <main>
-    <!-- Chatbot Section -->
-    <section>
-      <iframe 
-        src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?embed=true" 
-        allow="microphone"
-        loading="eager">
-      </iframe>
-    </section>
+  <iframe 
+    src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?embed=true" 
+    allow="microphone" 
+    loading="eager">
+  </iframe>
 
-    <!-- Image Generator Section -->
-    <section>
-      <h2>🎨 Describe anything to turn into an image:</h2>
-      <input id="prompt" type="text" placeholder="Type or speak your image idea..." />
-      <button onclick="generateImage()">✨ Generate Image</button>
-      <button onclick="startSpeech()">🎤 Speak</button>
-      <br />
-      <img id="image-result" src="" alt="Generated image will appear here" />
-    </section>
-  </main>
-
-  <script>
-    // Voice input using Web Speech API
-    function startSpeech() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = 'en-US';
-      recognition.start();
-      recognition.onresult = function(event) {
-        document.getElementById('prompt').value = event.results[0][0].transcript;
-      };
-    }
-
-    // Image generation using Hugging Face API
-    async function generateImage() {
-      const prompt = document.getElementById('prompt').value;
-      const response = await fetch("https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer YOUR_TOKEN_HERE",  // ← replace this on Vercel env var
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ inputs: prompt })
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        document.getElementById('image-result').src = imageUrl;
-      } else {
-        alert("Failed to generate image");
-      }
-    }
-  </script>
+  <footer>
+    Powered by Hugging Face & TinyLLaMA | © 2025 Ethereal Ink Studios
+  </footer>
 
 </body>
-        </html>
+</html>
