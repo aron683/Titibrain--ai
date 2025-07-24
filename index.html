@@ -3,86 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🧠 Titi ke AI</title>
+  <title>Titi Brain</title>
   <style>
-    body {
-      background-color: #0d0d0d;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      padding: 2rem;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
     }
-    h1 {
-      color: #1e90ff;
-      font-size: 2rem;
-    }
-    input, button {
-      padding: 12px;
-      font-size: 16px;
-      width: 80%;
-      margin-top: 10px;
-      border-radius: 8px;
+    iframe {
+      width: 100%;
+      height: 100%;
       border: none;
-    }
-    input {
-      background: #222;
-      color: #fff;
-    }
-    button {
-      background-color: #00c853;
-      color: white;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-    #response {
-      margin-top: 30px;
-      font-size: 18px;
-      background: #111;
-      padding: 1rem;
-      border-radius: 10px;
-      color: #00e676;
-    }
-    footer {
-      margin-top: 2rem;
-      font-size: 0.9rem;
-      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Titi ke AI</h1>
-  <p>Ask me anything below 👇</p>
-  <input id="userInput" placeholder="Type your question..." />
-  <br/>
-  <button onclick="talkToBrain()">Talk to Titi Brain</button>
-  <div id="response">Waiting for message...</div>
-
-  <footer>
-    Made with ❤️ by Ethereal Ink. Powered by TinyLLAMA.
-  </footer>
-
-  <script>
-    async function talkToBrain() {
-      const message = document.getElementById('userInput').value;
-      document.getElementById('response').innerText = "Thinking...";
-
-      try {
-        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/run/predict", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ data: [message] })
-        });
-
-        const data = await res.json();
-        const reply = data?.data?.[0] || "⚠️ No response.";
-        document.getElementById('response').innerText = reply;
-
-      } catch (err) {
-        document.getElementById('response').innerText = "❌ Error connecting to TitiBrain.";
-      }
-    }
-  </script>
+  <iframe src="https://etherealinkbytiisetso-titibrainchat.hf.space?__theme=dark"></iframe>
 </body>
 </html>
