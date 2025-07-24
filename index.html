@@ -3,48 +3,75 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TitiBrain AI</title>
+  <title>TitiBrain AI – TinyLLaMA</title>
   <style>
-    body { background: #0a0e2a; color: #fff; font-family: sans-serif; text-align: center; padding: 2em; }
-    input, button, textarea { font-size: 1em; margin-top: 1em; padding: 0.8em; border-radius: 8px; }
-    button { background: #00c080; color: white; border: none; cursor: pointer; }
-    #response { margin-top: 2em; white-space: pre-wrap; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f19;
+      color: white;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 30px;
+      font-size: 2rem;
+      color: #00ffa0;
+    }
+    textarea {
+      width: 80%;
+      height: 100px;
+      margin-top: 20px;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: #00ffa0;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #response {
+      margin-top: 30px;
+      padding: 15px;
+      background: #111827;
+      border-radius: 10px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
   </style>
 </head>
 <body>
+
   <h1>🧠 TitiBrain AI</h1>
-  <textarea id="userInput" rows="4" cols="50" placeholder="Say something..."></textarea><br/>
-  <button onclick="sendMessage()">Send</button>
+  <textarea id="prompt" placeholder="Talk to TitiBrain..."></textarea><br>
+  <button onclick="sendPrompt()">Send</button>
 
   <div id="response"></div>
 
   <script>
-    async function sendMessage() {
-      const input = document.getElementById('userInput').value;
-      const responseBox = document.getElementById('response');
-      responseBox.innerText = "Thinking...";
-
+    async function sendPrompt() {
+      const prompt = document.getElementById("prompt").value;
+      const responseDiv = document.getElementById("response");
+      responseDiv.innerHTML = "⏳ Thinking...";
       try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ inputs: input })
+        const res = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
         });
-
         const data = await res.json();
-        if (data.generated_text) {
-          responseBox.innerText = data.generated_text;
-        } else if (Array.isArray(data) && data[0]?.generated_text) {
-          responseBox.innerText = data[0].generated_text;
-        } else if (data.error) {
-          responseBox.innerText = "❌ Error: " + data.error;
-        } else {
-          responseBox.innerText = JSON.stringify(data);
-        }
+        responseDiv.innerHTML = "💬 " + data.reply;
       } catch (err) {
-        responseBox.innerText = "❌ Failed: " + err.message;
+        responseDiv.innerHTML = "❌ Error: " + err.message;
       }
     }
   </script>
+
 </body>
 </html>
