@@ -3,85 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TitiBrain AI – Real Chat</title>
+  <title>TitiBrain AI</title>
   <style>
-    body {
-      margin: 0;
-      background: #0f172a;
-      font-family: 'Segoe UI', sans-serif;
-      color: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px;
-    }
-    h1 {
-      color: #22d3ee;
-    }
-    textarea, button {
-      width: 90%;
-      max-width: 500px;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: none;
-    }
-    textarea {
-      height: 100px;
-    }
-    button {
-      background-color: #10b981;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #059669;
-    }
-    .response-box {
-      margin-top: 20px;
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 500px;
-      white-space: pre-wrap;
-    }
+    body { background: #0a0e2a; color: #fff; font-family: sans-serif; text-align: center; padding: 2em; }
+    input, button, textarea { font-size: 1em; margin-top: 1em; padding: 0.8em; border-radius: 8px; }
+    button { background: #00c080; color: white; border: none; cursor: pointer; }
+    #response { margin-top: 2em; white-space: pre-wrap; }
   </style>
 </head>
 <body>
+  <h1>🧠 TitiBrain AI</h1>
+  <textarea id="userInput" rows="4" cols="50" placeholder="Say something..."></textarea><br/>
+  <button onclick="sendMessage()">Send</button>
 
-  <h1>🧠 TitiBrain AI – Real Chat</h1>
-
-  <textarea id="userInput" placeholder="Type your message..."></textarea>
-  <button onclick="sendToAI()">Send</button>
-
-  <div class="response-box" id="responseBox">Reply will appear here...</div>
+  <div id="response"></div>
 
   <script>
-    async function sendToAI() {
-      const input = document.getElementById("userInput").value;
-      const responseBox = document.getElementById("responseBox");
-      responseBox.textContent = "⏳ Thinking...";
+    async function sendMessage() {
+      const input = document.getElementById('userInput').value;
+      const responseBox = document.getElementById('response');
+      responseBox.innerText = "Thinking...";
 
       try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ inputs: input })
         });
 
         const data = await res.json();
-
-        if (Array.isArray(data)) {
-          responseBox.textContent = data[0]?.generated_text || "No response.";
-        } else if (data.generated_text) {
-          responseBox.textContent = data.generated_text;
+        if (data.generated_text) {
+          responseBox.innerText = data.generated_text;
+        } else if (Array.isArray(data) && data[0]?.generated_text) {
+          responseBox.innerText = data[0].generated_text;
+        } else if (data.error) {
+          responseBox.innerText = "❌ Error: " + data.error;
         } else {
-          responseBox.textContent = JSON.stringify(data, null, 2);
+          responseBox.innerText = JSON.stringify(data);
         }
-
       } catch (err) {
-        responseBox.textContent = "❌ Error: " + err.message;
+        responseBox.innerText = "❌ Failed: " + err.message;
       }
     }
   </script>
