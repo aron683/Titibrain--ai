@@ -3,81 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TitiBrain AI Chat</title>
+  <title>Titi ke AI 🧠</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      text-align: center;
+      margin: 0;
+      background-color: #0d0d0d;
+      font-family: 'Segoe UI', sans-serif;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    header {
+      background: #1f1f1f;
+      color: #00ffcc;
       padding: 20px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 255, 204, 0.2);
+      letter-spacing: 1px;
     }
-    h1 {
-      font-size: 24px;
-    }
-    textarea {
-      width: 90%;
-      height: 100px;
-      margin-top: 20px;
-      font-size: 16px;
-      padding: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      font-size: 18px;
-      background-color: #007bff;
-      color: white;
+
+    iframe {
       border: none;
-      border-radius: 5px;
-    }
-    #response {
-      margin-top: 20px;
-      white-space: pre-wrap;
-      background: #eee;
-      padding: 10px;
-      border-radius: 5px;
-      max-width: 90%;
-      margin-left: auto;
-      margin-right: auto;
+      width: 100vw;
+      height: calc(100vh - 80px);
+      background-color: #000;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 TitiBrain AI Chat</h1>
-  <form>
-    <textarea placeholder="Ask TitiBrain..."></textarea><br/>
-    <button type="submit">Ask TitiBrain</button>
-  </form>
-  <div id="response">🤖 Ready to chat.</div>
+  <header>🤖 Titi ke AI – Powered by Ethereal Ink Studios</header>
 
-  <script>
-    const form = document.querySelector("form");
-    const input = document.querySelector("textarea");
-    const output = document.querySelector("#response");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const prompt = input.value.trim();
-      if (!prompt) return output.innerText = "❌ Please enter a question.";
-
-      output.innerText = "⏳ Thinking...";
-
-      try {
-        const res = await fetch("https://titibrainchat-etherealinkbytiisetso.hf.space/api/predict", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ data: [prompt] })
-        });
-
-        const result = await res.json();
-        output.innerText = result?.data?.[0] || "⚠️ No response.";
-      } catch (err) {
-        console.error(err);
-        output.innerText = "🚫 Error contacting TitiBrain AI.";
-      }
-    });
-  </script>
+  <iframe src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?__theme=dark"></iframe>
 </body>
 </html>
