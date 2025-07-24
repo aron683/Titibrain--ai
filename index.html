@@ -1,94 +1,109 @@
-
-      
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Titi ke AI - BrainChat</title>
+  <title>Titi ke AI</title>
   <style>
     body {
       background-color: #0d0d0d;
-      color: #fff;
+      color: #ffffff;
       font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 2rem;
       text-align: center;
-      padding: 30px;
     }
+
     h1 {
-      color: #4da6ff;
+      color: #1e90ff;
       font-size: 2rem;
     }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    .input-box {
-      background-color: #1a1a1a;
-      border: none;
-      border-radius: 5px;
-      color: #fff;
-      width: 90%;
-      max-width: 400px;
-      padding: 15px;
+
+    p {
       font-size: 1rem;
-      margin-bottom: 10px;
+      color: #aaa;
+      margin-bottom: 2rem;
     }
-    .send-btn {
-      background-color: #00cc66;
+
+    input, button {
+      padding: 12px;
+      font-size: 16px;
+      width: 80%;
+      margin-top: 10px;
+      border-radius: 8px;
       border: none;
-      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    input {
+      background: #1c1c1c;
+      color: #ffffff;
+    }
+
+    button {
+      background-color: #00c853;
       color: white;
-      padding: 10px 20px;
-      font-size: 1rem;
+      margin-top: 10px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
-    .response-box {
-      margin-top: 20px;
-      padding: 15px;
-      background: #1a1a1a;
-      border-radius: 5px;
-      color: #ccc;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+
+    button:hover {
+      background-color: #00e676;
     }
+
+    #response {
+      margin-top: 30px;
+      font-size: 18px;
+      background: #111;
+      padding: 1rem;
+      border-radius: 10px;
+      color: #00e676;
+      min-height: 50px;
+    }
+
     footer {
       margin-top: 40px;
       font-size: 0.9rem;
-      color: #555;
+      color: #444;
     }
   </style>
 </head>
 <body>
-  <div class="logo">🧠 Titi ke AI</div>
-  <h1>Ask me anything below 👇</h1>
-  <input id="userInput" class="input-box" placeholder="Hey..." />
-  <br>
-  <button class="send-btn" onclick="askTiti()">Talk to Titi Brain</button>
-  <div id="response" class="response-box">📝 Awaiting your question...</div>
+  <h1>🧠 Titi ke AI</h1>
+  <p>Ask me anything below 👇</p>
+
+  <input id="userInput" placeholder="Type your question..." />
+  <br/>
+  <button onclick="talkToBrain()">Talk to Titi Brain</button>
+
+  <div id="response">🤖 Ready when you are...</div>
 
   <footer>
-    Made with ❤️ by Ethereal Ink · Powered by HuggingFace + TinyLlama
+    Made with ❤️ by Ethereal Ink. Powered by TinyLLaMA.
   </footer>
 
   <script>
-    async function askTiti() {
-      const userInput = document.getElementById('userInput').value;
-      const responseDiv = document.getElementById('response');
-      responseDiv.innerHTML = "⏳ Thinking...";
+    async function talkToBrain() {
+      const message = document.getElementById('userInput').value;
+      const responseBox = document.getElementById('response');
+      responseBox.innerText = "⏳ Thinking...";
 
       try {
-        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/", {
+        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/run/predict", {
           method: "POST",
-          mode: "no-cors",
-          body: userInput
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ data: [message] })
         });
 
-        responseDiv.innerHTML = "✅ Message sent to backend. Check response in browser directly (due to no-cors).";
-      } catch (err) {
-        responseDiv.innerHTML = "❌ Error talking to Titi Brain.";
-        console.error(err);
+        const data = await res.json();
+        const reply = data?.data?.[0] || "⚠️ No response.";
+        responseBox.innerText = reply;
+      } catch (error) {
+        responseBox.innerText = "❌ Error connecting to Titi Brain.";
+        console.error(error);
       }
     }
   </script>
