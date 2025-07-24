@@ -1,87 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Titi ke AI - BrainChat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --bg: #0e0f11;
+      --primary: #4aa3ff;
+      --text: #ffffff;
+      --accent: #16c60c;
+      --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-      background: #0d1117;
-      color: #e6edf3;
-      font-family: "Segoe UI", sans-serif;
-      padding: 2rem;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    header {
+      background-color: #0e0f11;
+      padding: 15px 30px;
+      font-size: 1.5em;
+      font-weight: bold;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 90vh;
+      padding: 20px;
       text-align: center;
     }
-    h1 {
-      color: #58a6ff;
+
+    .logo {
+      font-size: 2em;
+      margin-bottom: 10px;
     }
+
     textarea {
       width: 90%;
       max-width: 600px;
-      padding: 1rem;
-      font-size: 1rem;
+      height: 100px;
+      padding: 15px;
+      font-size: 1.1em;
+      background-color: #1a1b1e;
+      color: var(--text);
+      border: 1px solid #333;
       border-radius: 8px;
-      margin-top: 1rem;
+      resize: none;
+      outline: none;
     }
+
     button {
-      background: #238636;
-      color: white;
-      padding: 1rem 2rem;
+      margin-top: 15px;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      background-color: var(--accent);
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      margin-top: 1rem;
+      border-radius: 5px;
       cursor: pointer;
     }
+
     .response {
-      background: #161b22;
-      color: #fff;
-      margin-top: 2rem;
-      padding: 1rem;
-      border-radius: 8px;
+      margin-top: 30px;
+      width: 90%;
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      text-align: left;
+      background-color: #1e1f22;
+      padding: 15px;
+      border-radius: 8px;
       white-space: pre-wrap;
     }
+
     footer {
-      margin-top: 4rem;
-      color: #8b949e;
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #888;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      textarea {
+        height: 80px;
+      }
+
+      button {
+        width: 90%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>🧠 <span style="color:#58a6ff">Titi ke AI</span></h1>
-  <p>Ask me anything, I run on HuggingFace 🤖</p>
-  <textarea id="userInput" rows="4" placeholder="Type your question here..."></textarea><br>
-  <button onclick="askTiti()">Talk to Titi Brain</button>
+  <header>🧠 Titi ke AI</header>
 
-  <div class="response" id="responseBox">🧠 Waiting for your question...</div>
+  <div class="chat-container">
+    <div class="logo">Ask me anything below 👇</div>
+    <textarea id="input" placeholder="Type your question here..."></textarea>
+    <button onclick="sendMessage()">Talk to Titi Brain</button>
+    <div class="response" id="responseBox"></div>
+  </div>
 
-  <footer>Made with ❤️ by Ethereal Ink | Powered by HuggingFace + TinyLlama</footer>
+  <footer>
+    Made with ❤️ by Ethereal Ink • Powered by HuggingFace + TinyLLaMA
+  </footer>
 
   <script>
-    async function askTiti() {
-      const userMessage = document.getElementById("userInput").value;
+    async function sendMessage() {
+      const userInput = document.getElementById("input").value;
       const responseBox = document.getElementById("responseBox");
-      responseBox.innerText = "⏳ Thinking...";
-
-      const formData = new FormData();
-      formData.append("data", userMessage);
+      responseBox.innerText = "🧠 Thinking...";
 
       try {
-        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/api/predict/", {
+        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/run/predict", {
           method: "POST",
-          body: formData
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: [userInput] })
         });
 
-        const result = await res.json();
-        responseBox.innerText = result.data[0];
+        const data = await res.json();
+        responseBox.innerText = data?.data?.[0] || "❌ No response.";
       } catch (err) {
-        responseBox.innerText = "⚠️ Cannot reach Hugging Face Space. Please try again later.";
+        responseBox.innerText = "❌ Error talking to Titi Brain.";
       }
     }
   </script>
+
 </body>
-</html>
+    </html>
