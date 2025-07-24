@@ -3,38 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Titi ke AI 🧠</title>
+  <title>Titi ke AI - BrainChat</title>
   <style>
     body {
       margin: 0;
-      background-color: #0d0d0d;
-      font-family: 'Segoe UI', sans-serif;
-      color: #ffffff;
-      overflow: hidden;
-    }
-
-    header {
-      background: #1f1f1f;
-      color: #00ffcc;
-      padding: 20px;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       text-align: center;
-      font-size: 26px;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 255, 204, 0.2);
-      letter-spacing: 1px;
     }
-
-    iframe {
-      border: none;
-      width: 100vw;
-      height: calc(100vh - 80px);
-      background-color: #000;
+    h1 {
+      font-size: 2.5rem;
+      color: #58a6ff;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.1rem;
+      max-width: 600px;
+    }
+    .logo {
+      font-size: 3rem;
+    }
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.9rem;
+      color: #8b949e;
     }
   </style>
 </head>
 <body>
-  <header>🤖 Titi ke AI – Powered by Ethereal Ink Studios</header>
-
-  <iframe src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?__theme=dark"></iframe>
+  <div class="logo">🧠</div>
+  <h1>Titi ke AI</h1>
+  <p>Your offline smart assistant powered by TinyLlama + llama.cpp — fast, light & private!</p>
+  <div class="footer">Made with ❤️ by Ethereal Ink | Powered by Gradio + LlamaCpp</div>
 </body>
 </html>
