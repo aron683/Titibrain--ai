@@ -2,45 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Titi ke AI - BrainChat</title>
   <style>
     body {
-      margin: 0;
       background-color: #0d1117;
-      color: #c9d1d9;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e6edf3;
+      font-family: "Segoe UI", sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
+      padding: 2rem;
     }
     h1 {
-      font-size: 2.5rem;
       color: #58a6ff;
-      margin-bottom: 10px;
     }
-    p {
-      font-size: 1.1rem;
+    input, button, textarea {
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: none;
+      margin-top: 10px;
+      width: 100%;
       max-width: 600px;
+      font-size: 1rem;
     }
-    .logo {
-      font-size: 3rem;
+    button {
+      background-color: #238636;
+      color: white;
+      cursor: pointer;
     }
-    .footer {
-      position: absolute;
-      bottom: 10px;
-      font-size: 0.9rem;
+    button:hover {
+      background-color: #2ea043;
+    }
+    .response {
+      background-color: #161b22;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      max-width: 600px;
+      white-space: pre-wrap;
+    }
+    footer {
+      margin-top: 3rem;
       color: #8b949e;
     }
   </style>
 </head>
 <body>
-  <div class="logo">🧠</div>
-  <h1>Titi ke AI</h1>
-  <p>Your offline smart assistant powered by TinyLlama + llama.cpp — fast, light & private!</p>
-  <div class="footer">Made with ❤️ by Ethereal Ink | Powered by Gradio + LlamaCpp</div>
+  <h1>🧠 Titi ke AI</h1>
+  <p>Ask me anything, I run on HuggingFace 🤖</p>
+  <textarea id="userInput" rows="4" placeholder="Type your question..."></textarea>
+  <button onclick="askBrain()">Talk to Titi Brain</button>
+  <div id="response" class="response"></div>
+
+  <footer>Made with ❤️ by Ethereal Ink • Powered by HuggingFace</footer>
+
+  <script>
+    async function askBrain() {
+      const input = document.getElementById("userInput").value;
+      const responseDiv = document.getElementById("response");
+      responseDiv.innerText = "Thinking...";
+
+      try {
+        const res = await fetch("https://etherealinkbytiisetso-titibrainchat.hf.space/api/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ data: [input] })
+        });
+
+        const data = await res.json();
+        responseDiv.innerText = data.data[0];
+      } catch (err) {
+        responseDiv.innerText = "⚠️ Error: Cannot reach Hugging Face Space.";
+      }
+    }
+  </script>
 </body>
 </html>
