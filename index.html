@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TitiBrain AI</title>
+  <title>Titi ke AI</title>
   <style>
     body {
       background-color: #0b0f19;
       color: #fff;
-      font-family: "Segoe UI", sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
+      margin: 0;
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       color: #00ffa0;
       margin-bottom: 10px;
     }
 
     p {
-      font-size: 1rem;
-      color: #cccccc;
+      font-size: 1.1rem;
       margin-bottom: 20px;
     }
 
@@ -29,64 +29,114 @@
       border: none;
       border-radius: 12px;
       box-shadow: 0 0 30px #00ffa040;
+      margin-bottom: 30px;
     }
 
-    .mic-button {
-      background-color: #00ffa0;
-      border: none;
+    button {
+      padding: 10px 20px;
+      background: #00ffa0;
       color: #000;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 20px;
-      transition: 0.3s;
+      margin: 10px;
     }
 
-    .mic-button:hover {
-      background-color: #00dd90;
+    input {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 6px;
+      margin-top: 10px;
+      border: none;
+    }
+
+    #imageArea img {
+      margin-top: 20px;
+      max-width: 90%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ffa040;
+    }
+
+    #voiceResult {
+      margin-top: 10px;
+      font-style: italic;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Welcome to TitiBrain AI</h1>
-  <p>Speak or chat below. Powered by HuggingFace 🧠💬</p>
+  <h1>🧠 Titi ke AI</h1>
+  <p>Your local AI brain for chats, voice, and images</p>
 
-  <!-- Voice input mic -->
-  <button class="mic-button" onclick="startVoice()">🎙️ Talk to TitiBrain</button>
+  <!-- 🎙 VOICE -->
+  <h2>🎤 Speak to Titi</h2>
+  <button onclick="startVoice()">Start Talking</button>
+  <p id="voiceResult"></p>
 
-  <!-- Embed AI chatbot -->
+  <!-- 💬 CHAT -->
+  <h2>💬 Ask Titi Anything</h2>
   <iframe
-    id="chatbot"
     src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?embed=true"
     width="100%"
     height="600"
   ></iframe>
 
+  <!-- 🎨 IMAGE -->
+  <h2>🎨 Create Image</h2>
+  <input type="text" id="prompt" placeholder="Describe what to generate..." />
+  <button onclick="generateImage()">Generate Image</button>
+  <div id="imageArea"></div>
+
   <script>
+    // 🎙 Voice-to-Text
     function startVoice() {
-      const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+      const result = document.getElementById("voiceResult");
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = "en-US";
       recognition.start();
 
-      recognition.onresult = function(event) {
-        const spoken = event.results[0][0].transcript;
-        speak("Sending: " + spoken);
-        alert("You said: " + spoken + "\n\nPlease type it into the chat manually.");
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        result.textContent = "You said: " + transcript;
       };
 
-      recognition.onerror = function(e) {
-        alert("🎙️ Voice error: " + e.error);
+      recognition.onerror = () => {
+        result.textContent = "Voice recognition failed.";
       };
     }
 
-    function speak(text) {
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      synth.speak(utterance);
+    // 🎨 Image Generator using HuggingFace Inference API
+    async function generateImage() {
+      const prompt = document.getElementById("prompt").value;
+      if (!prompt) return;
+
+      document.getElementById("imageArea").innerHTML = "Generating...";
+
+      const response = await fetch("https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer hf_your_REAL_token_here",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ inputs: prompt })
+      });
+
+      if (!response.ok) {
+        document.getElementById("imageArea").innerHTML = "⚠️ Failed to generate.";
+        return;
+      }
+
+      const buffer = await response.arrayBuffer();
+      const base64 = btoa(
+        new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
+      );
+      const image = new Image();
+      image.src = `data:image/png;base64,${base64}`;
+      document.getElementById("imageArea").innerHTML = "";
+      document.getElementById("imageArea").appendChild(image);
     }
   </script>
 </body>
-  </html>
+    </html>
