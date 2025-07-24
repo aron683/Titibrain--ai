@@ -2,51 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TitiBrain AI – Chat Live</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TitiBrain AI – Real Chat</title>
   <style>
     body {
       margin: 0;
+      background: #0f172a;
       font-family: 'Segoe UI', sans-serif;
-      background: #0b0f19;
-      color: #fff;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
     }
-    header {
-      background: #111827;
-      padding: 20px;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #00ffa0;
+    h1 {
+      color: #22d3ee;
     }
-    iframe {
-      width: 100%;
-      height: calc(100vh - 80px);
-      border: none;
-      border-top: 2px solid #00ffa050;
-    }
-    footer {
-      background: #0b0f19;
-      color: #888;
-      text-align: center;
+    textarea, button {
+      width: 90%;
+      max-width: 500px;
+      margin: 10px 0;
       padding: 10px;
-      font-size: 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+    }
+    textarea {
+      height: 100px;
+    }
+    button {
+      background-color: #10b981;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #059669;
+    }
+    .response-box {
+      margin-top: 20px;
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
 
-  <header>🧠 TitiBrain AI – Chat Live</header>
+  <h1>🧠 TitiBrain AI – Real Chat</h1>
 
-  <iframe 
-    src="https://huggingface.co/spaces/Etherealinkbytiisetso/Titibrainchat?embed=true" 
-    allow="microphone" 
-    loading="eager">
-  </iframe>
+  <textarea id="userInput" placeholder="Type your message..."></textarea>
+  <button onclick="sendToAI()">Send</button>
 
-  <footer>
-    Powered by Hugging Face & TinyLLaMA | © 2025 Ethereal Ink Studios
-  </footer>
+  <div class="response-box" id="responseBox">Reply will appear here...</div>
 
+  <script>
+    async function sendToAI() {
+      const input = document.getElementById("userInput").value;
+      const responseBox = document.getElementById("responseBox");
+      responseBox.textContent = "⏳ Thinking...";
+
+      const HF_API_URL = "https://api-inference.huggingface.co/models/Etherealinkbytiisetso/Titibrainchat";
+      
+      const headers = {
+        "Authorization": `Bearer ${import.meta.env.VITE_HF_TOKEN}`, // auto from Vercel env
+        "Content-Type": "application/json"
+      };
+
+      const payload = {
+        inputs: input
+      };
+
+      try {
+        const res = await fetch(HF_API_URL, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          responseBox.textContent = data[0].generated_text || "No response.";
+        } else if (data.generated_text) {
+          responseBox.textContent = data.generated_text;
+        } else {
+          responseBox.textContent = JSON.stringify(data, null, 2);
+        }
+
+      } catch (err) {
+        responseBox.textContent = "❌ Error: " + err.message;
+      }
+    }
+  </script>
 </body>
 </html>
