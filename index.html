@@ -63,28 +63,17 @@
       const responseBox = document.getElementById("responseBox");
       responseBox.textContent = "⏳ Thinking...";
 
-      const HF_API_URL = "https://api-inference.huggingface.co/models/Etherealinkbytiisetso/Titibrainchat";
-      
-      const headers = {
-        "Authorization": `Bearer ${import.meta.env.VITE_HF_TOKEN}`, // auto from Vercel env
-        "Content-Type": "application/json"
-      };
-
-      const payload = {
-        inputs: input
-      };
-
       try {
-        const res = await fetch(HF_API_URL, {
+        const res = await fetch("/api/chat", {
           method: "POST",
-          headers: headers,
-          body: JSON.stringify(payload)
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ inputs: input })
         });
 
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          responseBox.textContent = data[0].generated_text || "No response.";
+          responseBox.textContent = data[0]?.generated_text || "No response.";
         } else if (data.generated_text) {
           responseBox.textContent = data.generated_text;
         } else {
