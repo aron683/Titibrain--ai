@@ -9,26 +9,28 @@
       margin: 0;
       background: #0d0d0d;
       font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      overflow: hidden;
     }
     header {
       color: #1e90ff;
       font-size: 24px;
       font-weight: bold;
       padding: 1rem 1.5rem;
+      display: none; /* hide header for full screen */
     }
     iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       border: none;
     }
-    /* Hide scrollbar and Gradio footer */
-    iframe::-webkit-scrollbar {
-      display: none;
-    }
+    /* Hide scrollbar */
     ::-webkit-scrollbar {
       display: none;
     }
-    /* Hidden frame for ShrinkMe link */
     #stealth {
       position: absolute;
       width: 1px;
@@ -40,6 +42,7 @@
   </style>
 </head>
 <body>
+  <!-- Hidden header -->
   <header>🧠 Titi ke AI</header>
 
   <!-- Main AI iframe -->
